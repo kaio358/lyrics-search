@@ -14,27 +14,30 @@ const fragment = document.createDocumentFragment()
 
 form.addEventListener("submit",(event)=>{
     event.preventDefault()
-    // talvez uppercase ou lowercase
     const searchTratado = search.value.trim()
-    const li = fabrica_LI(searchTratado)
-   
-    // songs_container.appendChild(li)
-   
-   
-    
+    resultado(searchTratado)
+       
 })
 
-function fabrica_LI(searchTratado) {
-    const li = document.createElement("li")
+function fabrica_LI(searchTratado,dados) {
+    
     if(!searchTratado){
+        const li = document.createElement("li")
         li.classList.add("warning-message")
         li.textContent = "Por favor, digite um termo valido"
-        return li
+       fragment.appendChild(li)
     }else{
-        const dados=  picota(searchTratado)
+        for( let dado in dados){
+            const li = document.createElement("li")
+            li.classList.add("song")
+            li.innerHTML = `<span class= "song-artist"> <strong>${dados[dado].artista}</strong> - ${dados[dado].titulo} ${dados[dado].versao} </span> <button class="btn" data-artist="${dados[dado].artista}" data-song="${dados[dado].titulo + dados[dado].versao}">Ver letra </button>`
+            fragment.appendChild(li)
+        }
         
+
+     
     }
-    
+   
 }
 
 async  function picota(searchTratado) {
@@ -45,4 +48,11 @@ async  function picota(searchTratado) {
        
     }
     return arrayPicotado
+}
+
+async function resultado(searchTratado) {
+    const dados = await picota(searchTratado)    
+   fabrica_LI(searchTratado,dados)
+  
+    songs_container.appendChild(fragment)
 }
